@@ -2,6 +2,7 @@ package br.com.lsoft.modules;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
@@ -13,6 +14,10 @@ public class DataTable implements Serializable{
 	
 	private LinkedList<LinkedList<Object>> data;
 	private LinkedList<Object> headers;
+
+	public enum ORDER {
+		ASC, DESC
+	}
 	
 	{
 		this.data = new LinkedList<LinkedList<Object>>();
@@ -179,6 +184,23 @@ public class DataTable implements Serializable{
 
 	public void addColumn(int row, String string) {
 		data.get(row).add(string);
+	}
+
+	public void order(String column, ORDER order) {
+		var index = this.headers.indexOf(column);
+		this.order(index, order);
+	}
+
+	public void order(int index, ORDER order) {
+		this.data.sort(new Comparator<>() {
+			@Override
+			public int compare(LinkedList<Object> a, LinkedList<Object> b) {
+				if (order.equals(ORDER.ASC))
+					return a.get(index).toString().compareTo(b.get(index).toString());
+				else
+				return b.get(index).toString().compareTo(a.get(index).toString());
+			}
+		});
 	}
 
 }
